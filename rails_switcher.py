@@ -113,8 +113,20 @@ class RailsSwitcherCommandBase(sublime_plugin.WindowCommand):
   def base_file_name(self, file_path):
     return os.path.splitext(os.path.basename(file_path))[0]
 
+
+  def stop_if_rails(self):
+    directory = os.path.abspath(os.path.join(os.path.dirname(sublime.active_window().active_view().file_name()),".."))
+    for x in range(1, 10):
+      if os.path.exists(os.path.join(directory, 'Rakefile')):
+        return os.path.abspath(directory)
+      else :
+        directory = os.path.abspath(os.path.join(directory, os.path.pardir))
+
+    return False
+
   def setup(self):
-    self.rails_root_directory = sublime.active_window().folders()[0]
+    #self.rails_root_directory = sublime.active_window().folders()[0]
+    self.rails_root_directory = self.stop_if_rails()
     self.current_file_path = sublime.active_window().active_view().file_name()
 
 
